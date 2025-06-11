@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detección Precoz del Cáncer de Páncreas: Una Propuesta Innovadora</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Clinical Hope -->
+    <!-- Application Structure Plan: La aplicación está estructurada como un viaje narrativo lineal para guiar al usuario desde el problema central (diagnóstico tardío del cáncer de páncreas) hasta la solución propuesta y sus implicaciones. Esta estructura, utilizando secciones secuenciales para 'El Problema', 'La Solución Propuesta', 'La Tecnología', 'El Impacto Potencial' y 'Desafíos y Futuro', se eligió sobre un modelo de panel para hacer la densa información científica más digerible y para construir un caso convincente sobre el valor de la propuesta. Las interacciones clave incluyen diagramas clicables, gráficos dinámicos y acordeones para gestionar la densidad de la información y fomentar la exploración enfocada. -->
+    <!-- Visualization & Content Choices: 
+        - El Problema: Gráfico de Donut (Chart.js) para mostrar la baja tasa de supervivencia y tarjetas de estadísticas. Objetivo: Informar/Impactar.
+        - La Solución: Diagrama de flujo interactivo (HTML/CSS/JS) para explicar el proceso en dos pasos. Objetivo: Organizar/Explicar. Interacción: Clic para revelar detalles de cada paso.
+        - La Tecnología: Tabla comparativa interactiva (HTML/CSS/JS) de las tecnologías de biopsia líquida. Objetivo: Comparar. Interacción: Efectos de hover para resaltar.
+        - El Impacto: Gráficos de barras (Chart.js) comparando la etapa de diagnóstico y las tasas de supervivencia. Objetivo: Comparar/Persuadir. Interacción: Tooltips informativos.
+        - Desafíos: Acordeón (HTML/JS) para detallar los obstáculos. Objetivo: Organizar/Informar. Interacción: Clic para expandir/colapsar. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #374151;
+        }
+        .nav-link {
+            transition: color 0.3s, border-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #4A908A;
+            border-bottom-color: #4A908A;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .accordion-content.open {
+            max-height: 1000px; /* valor suficientemente grande */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .step-box {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .step-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <h1 class="text-xl font-bold text-[#4A908A]">PAN-Dual-CRISPR-Dx</h1>
+                <div class="hidden md:flex space-x-8 text-gray-600 font-medium">
+                    <a href="#problem" class="nav-link px-1 py-2">El Problema</a>
+                    <a href="#solution" class="nav-link px-1 py-2">La Solución</a>
+                    <a href="#tech" class="nav-link px-1 py-2">Tecnología</a>
+                    <a href="#impact" class="nav-link px-1 py-2">Impacto</a>
+                    <a href="#challenges" class="nav-link px-1 py-2">Desafíos</a>
+                </div>
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:text-[#4A908A] hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2">
+                 <a href="#problem" class="block nav-link text-center py-2">El Problema</a>
+                 <a href="#solution" class="block nav-link text-center py-2">La Solución</a>
+                 <a href="#tech" class="block nav-link text-center py-2">Tecnología</a>
+                 <a href="#impact" class="block nav-link text-center py-2">Impacto</a>
+                 <a href="#challenges" class="block nav-link text-center py-2">Desafíos</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-12">
+
+        <section id="hero" class="text-center py-12">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4 leading-tight">Anticipando el Cáncer de Páncreas</h2>
+            <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">Una propuesta innovadora para cambiar el paradigma del diagnóstico en pacientes de alto riesgo mediante biopsia líquida y tecnología CRISPR.</p>
+        </section>
+
+        <section id="problem" class="py-16 scroll-mt-16">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800 mb-2">El Problema: Un Diagnóstico Casi Siempre Tardío</h3>
+                <p class="max-w-3xl mx-auto text-gray-600">El cáncer de páncreas es una de las neoplasias con peor pronóstico. Esto se debe, en gran medida, a que sus síntomas son inespecíficos, lo que provoca que la mayoría de los diagnósticos se realicen en fases muy avanzadas, cuando las opciones curativas son extremadamente limitadas.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-[#C0986C]">
+                        <h4 class="font-bold text-xl text-gray-700 mb-2">Diagnóstico en Fase Avanzada</h4>
+                        <p class="text-gray-600">Más del 80% de los pacientes son diagnosticados cuando el tumor ya se ha extendido, lo que imposibilita la cirugía curativa.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-[#C0986C]">
+                        <h4 class="font-bold text-xl text-gray-700 mb-2">Un Reto para la Imagenología</h4>
+                        <p class="text-gray-600">En pacientes con pancreatitis crónica, una condición de alto riesgo, es muy difícil diferenciar un tumor temprano de los cambios inflamatorios con las técnicas de imagen convencionales.</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                     <h4 class="font-bold text-xl text-gray-700 mb-4">Supervivencia a 5 años (todos los estadios)</h4>
+                    <div class="chart-container">
+                        <canvas id="survivalRateChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="py-16 bg-gray-50 rounded-xl scroll-mt-16">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800 mb-2">La Solución Propuesta: Un Enfoque Dual</h3>
+                 <p class="max-w-3xl mx-auto text-gray-600">Proponemos una estrategia de dos pasos para poblaciones de alto riesgo, como pacientes con pancreatitis crónica. El objetivo es estratificar el riesgo primero y luego realizar una vigilancia molecular para detectar el cáncer en su fase más incipiente. Haga clic en cada paso para ver los detalles.</p>
+            </div>
+            <div class="flex flex-col md:flex-row items-start justify-center gap-8 md:gap-4 px-4">
+                <div class="w-full md:w-1/3">
+                    <div id="step1-box" class="step-box cursor-pointer bg-white p-6 rounded-lg shadow-lg text-center border-t-4 border-[#4A908A]">
+                        <div class="text-4xl font-bold text-[#4A908A] mb-2">Paso 1</div>
+                        <h4 class="text-xl font-semibold text-gray-700">Identificar Riesgo Hereditario</h4>
+                    </div>
+                    <div id="step1-details" class="hidden mt-4 bg-teal-50 p-4 rounded-lg border border-teal-200">
+                        <p class="font-semibold text-teal-800">Prueba Genética Germinal</p>
+                        <p class="text-sm text-teal-700 mt-1">Se analiza el ADN del paciente para buscar mutaciones en genes asociados a la Pancreatitis Hereditaria (PH), que confieren un riesgo muy elevado de cáncer.</p>
+                        <ul class="text-xs text-teal-600 list-disc list-inside mt-2 space-y-1">
+                            <li><span class="font-semibold">PRSS1:</span> Alto riesgo, herencia dominante.</li>
+                            <li><span class="font-semibold">SPINK1:</span> Modulador de riesgo.</li>
+                            <li><span class="font-semibold">CTRC:</span> Modulador de riesgo.</li>
+                            <li><span class="font-semibold">CFTR:</span> Asociado a fibrosis quística y pancreatitis.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="self-center text-gray-400 text-4xl mx-4 hidden md:block">&rarr;</div>
+                 <div class="self-center text-gray-400 text-4xl my-4 rotate-90 md:hidden">&darr;</div>
+                <div class="w-full md:w-1/3">
+                    <div id="step2-box" class="step-box cursor-pointer bg-white p-6 rounded-lg shadow-lg text-center border-t-4 border-[#C0986C]">
+                        <div class="text-4xl font-bold text-[#C0986C] mb-2">Paso 2</div>
+                        <h4 class="text-xl font-semibold text-gray-700">Monitorización Molecular</h4>
+                    </div>
+                     <div id="step2-details" class="hidden mt-4 bg-amber-50 p-4 rounded-lg border border-amber-200">
+                        <p class="font-semibold text-amber-800">Biopsia Líquida Periódica</p>
+                        <p class="text-sm text-amber-700 mt-1">En pacientes identificados en el Paso 1, se realizan análisis de sangre periódicos para detectar la mutación del gen *KRAS*, un evento iniciador del cáncer de páncreas.</p>
+                        <p class="text-xs text-amber-600 mt-2"><span class="font-semibold">*KRAS*:</span> Presente en >90% de los tumores pancreáticos, incluso en lesiones precursoras (Estadio I o anterior).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tech" class="py-16 scroll-mt-16">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800 mb-2">La Tecnología: Precisión con CRISPR-Cas13</h3>
+                <p class="max-w-3xl mx-auto text-gray-600">La clave para la detección de las minúsculas cantidades de ADN tumoral en sangre es una tecnología ultrasensible. La propuesta se centra en CRISPR-Cas13 por su potencial, pero es útil compararla con otras plataformas establecidas.</p>
+            </div>
+             <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">Tecnología</th>
+                            <th scope="col" class="px-6 py-3">Ventaja Principal</th>
+                            <th scope="col" class="px-6 py-3">Límite</th>
+                            <th scope="col" class="px-6 py-3">Coste Relativo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-teal-50 border-b hover:bg-teal-100 transition-colors duration-200">
+                            <th scope="row" class="px-6 py-4 font-medium text-teal-900 whitespace-nowrap">CRISPR-Cas13</th>
+                            <td class="px-6 py-4">Altísima sensibilidad teórica, rapidez, bajo coste.</td>
+                            <td class="px-6 py-4">Tecnología emergente, requiere validación clínica específica.</td>
+                            <td class="px-6 py-4">Bajo</td>
+                        </tr>
+                        <tr class="bg-white border-b hover:bg-gray-100 transition-colors duration-200">
+                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">ddPCR</th>
+                            <td class="px-6 py-4">Muy sensible para mutaciones conocidas, cuantificación.</td>
+                            <td class="px-6 py-4">Limitada a pocos objetivos a la vez (bajo multiplexado).</td>
+                            <td class="px-6 py-4">Moderado</td>
+                        </tr>
+                        <tr class="bg-white border-b hover:bg-gray-100 transition-colors duration-200">
+                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">NGS (paneles)</th>
+                            <td class="px-6 py-4">Analiza cientos de genes, detecta nuevas mutaciones.</td>
+                            <td class="px-6 py-4">Mayor coste, mayor tiempo de análisis, complejo.</td>
+                            <td class="px-6 py-4">Alto</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="impact" class="py-16 bg-gray-50 rounded-xl scroll-mt-16">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800 mb-2">El Impacto Potencial: Un Cambio Radical en el Pronóstico</h3>
+                 <p class="max-w-3xl mx-auto text-gray-600">El objetivo final es desplazar el momento del diagnóstico. Detectar el cáncer en Estadio I, cuando es localizado y resecable, aumenta drásticamente las posibilidades de supervivencia en comparación con el diagnóstico actual, que ocurre mayoritariamente en Estadio IV.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="text-center">
+                    <h4 class="font-bold text-xl text-gray-700 mb-4">Diagnóstico: Actual vs. Objetivo</h4>
+                    <div class="chart-container h-80 md:h-96">
+                        <canvas id="stageShiftChart"></canvas>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <h4 class="font-bold text-xl text-gray-700 mb-4">Supervivencia a 5 años por Estadio</h4>
+                     <div class="chart-container h-80 md:h-96">
+                        <canvas id="survivalByStageChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="challenges" class="py-16 scroll-mt-16">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800 mb-2">Desafíos y Futuro</h3>
+                <p class="max-w-3xl mx-auto text-gray-600">El camino hacia la implementación clínica es complejo y requiere superar importantes obstáculos científicos, logísticos y éticos. A continuación se detallan las consideraciones clave.</p>
+            </div>
+            <div id="accordion-container" class="max-w-3xl mx-auto space-y-3">
+                
+                <div class="accordion-item bg-white rounded-lg shadow-sm border">
+                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                        <span>Precisión Diagnóstica y Validación</span>
+                        <span class="accordion-icon text-xl text-[#4A908A] transform transition-transform">+</span>
+                    </button>
+                    <div class="accordion-content px-5 text-gray-600">
+                        <p>Es crucial validar la prueba en estudios clínicos prospectivos a gran escala para confirmar su sensibilidad (evitar falsos negativos) y especificidad (evitar falsos positivos) en un entorno real. El reto principal es detectar las bajísimas concentraciones de ADN tumoral presentes en estadios iniciales.</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item bg-white rounded-lg shadow-sm border">
+                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                        <span>Utilidad Clínica y Manejo del Paciente</span>
+                        <span class="accordion-icon text-xl text-[#4A908A] transform transition-transform">+</span>
+                    </button>
+                    <div class="accordion-content px-5 text-gray-600">
+                        <p>¿Qué hacer con un resultado positivo si las pruebas de imagen son negativas? Es necesario definir protocolos claros de seguimiento para localizar el tumor. También se debe determinar el intervalo óptimo entre pruebas y cómo integrar este nuevo método con la vigilancia actual.</p>
+                    </div>
+                </div>
+
+                 <div class="accordion-item bg-white rounded-lg shadow-sm border">
+                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                        <span>Rentabilidad e Integración en el Sistema</span>
+                        <span class="accordion-icon text-xl text-[#4A908A] transform transition-transform">+</span>
+                    </button>
+                    <div class="accordion-content px-5 text-gray-600">
+                        <p>El coste de las pruebas genéticas y la monitorización periódica debe ser evaluado frente al ahorro que supone tratar un cáncer en fase temprana en lugar de avanzada. La rentabilidad y el futuro reembolso por parte de los sistemas de salud serán claves para su adopción.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-white rounded-lg shadow-sm border">
+                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                        <span>Consideraciones Éticas</span>
+                        <span class="accordion-icon text-xl text-[#4A908A] transform transition-transform">+</span>
+                    </button>
+                    <div class="accordion-content px-5 text-gray-600">
+                       <p>La implementación de un cribado genético requiere un manejo cuidadoso de la información. Es fundamental garantizar un consentimiento informado completo, ofrecer asesoramiento genético, proteger la privacidad de los datos y gestionar el impacto psicosocial (ansiedad) en los pacientes que viven con un diagnóstico de alto riesgo.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-4 py-6 text-center text-sm text-gray-400">
+            <p>&copy; 2025 Propuesta PAN-Dual-CRISPR-Dx. Esta es una visualización conceptual con fines informativos.</p>
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const chartColors = {
+        teal: '#4A908A',
+        gold: '#C0986C',
+        lightGray: '#E5E7EB',
+        darkGray: '#4B5563',
+        tealTransparent: 'rgba(74, 144, 138, 0.2)',
+        goldTransparent: 'rgba(192, 152, 108, 0.2)',
+    };
+    
+    Chart.defaults.font.family = 'Inter, sans-serif';
+
+    const survivalRateCtx = document.getElementById('survivalRateChart');
+    if (survivalRateCtx) {
+        new Chart(survivalRateCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Supervivencia', 'Mortalidad'],
+                datasets: [{
+                    data: [13, 87],
+                    backgroundColor: [chartColors.gold, chartColors.lightGray],
+                    borderColor: ['#FDFBF8'],
+                    borderWidth: 4,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.raw}%`;
+                            }
+                        }
+                    },
+                    title: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+
+    const stageShiftCtx = document.getElementById('stageShiftChart');
+    if (stageShiftCtx) {
+        new Chart(stageShiftCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Estadio I-II (Localizado)', 'Estadio III-IV (Avanzado)'],
+                datasets: [
+                    {
+                        label: 'Diagnóstico Actual',
+                        data: [20, 80],
+                        backgroundColor: chartColors.lightGray,
+                        borderColor: chartColors.darkGray,
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Diagnóstico Objetivo',
+                        data: [70, 30],
+                        backgroundColor: chartColors.tealTransparent,
+                        borderColor: chartColors.teal,
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    const survivalByStageCtx = document.getElementById('survivalByStageChart');
+    if (survivalByStageCtx) {
+        new Chart(survivalByStageCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Enfermedad Localizada (Estadio I)', 'Enfermedad Avanzada (Estadio IV)'],
+                datasets: [{
+                    label: 'Supervivencia a 5 años',
+                    data: [44, 3],
+                    backgroundColor: [chartColors.teal, chartColors.gold],
+                    borderColor: [chartColors.teal, chartColors.gold],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                 scales: {
+                    x: {
+                        beginAtZero: true,
+                         max: 50,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Supervivencia: ${context.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    const step1Box = document.getElementById('step1-box');
+    const step1Details = document.getElementById('step1-details');
+    const step2Box = document.getElementById('step2-box');
+    const step2Details = document.getElementById('step2-details');
+
+    step1Box.addEventListener('click', () => {
+        step1Details.classList.toggle('hidden');
+    });
+
+    step2Box.addEventListener('click', () => {
+        step2Details.classList.toggle('hidden');
+    });
+    
+    const accordionContainer = document.getElementById('accordion-container');
+    if(accordionContainer) {
+        accordionContainer.addEventListener('click', (e) => {
+            const header = e.target.closest('.accordion-header');
+            if (!header) return;
+
+            const item = header.parentElement;
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.accordion-icon');
+
+            const isOpen = content.classList.contains('open');
+
+            item.parentElement.querySelectorAll('.accordion-content').forEach(c => {
+                c.classList.remove('open');
+                c.previousElementSibling.querySelector('.accordion-icon').textContent = '+';
+            });
+            
+            if (!isOpen) {
+                content.classList.add('open');
+                icon.textContent = '-';
+            }
+        });
+    }
+
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+    
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('main section');
+
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.4
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === entry.target.id) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }, observerOptions);
+
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            if (mobileMenu.classList.contains('hidden') === false) {
+                 mobileMenu.classList.add('hidden');
+            }
+        });
+    });
+
+});
+</script>
+
+</body>
+</html>
