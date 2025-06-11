@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía: Detección Precoz del Cáncer de Páncreas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Energetic & Playful (Adapted for a professional, hopeful tone) -->
+    <!-- Application Structure Plan: The infographic is structured as a compelling narrative scroll, guiding the user from the severe problem (late diagnosis) to the proposed solution, its underlying technology, and its potential life-saving impact. Sections are logically ordered: The Problem, The Solution, The Technology, and The Impact. This linear story format is chosen to make complex scientific and statistical information digestible and to build a strong case for the proposal's value. -->
+    <!-- Visualization & Content Choices:
+        - Survival Rate: Donut Chart (Chart.js). Goal: Inform. Justification: Quickly conveys the stark reality of the low 5-year survival rate.
+        - Two-Step Process: Interactive Flowchart (HTML/CSS). Goal: Organize. Justification: Clearly explains the dual strategy (risk identification then monitoring), which is the core of the proposal. Interaction allows for progressive disclosure of details. NO SVG/Mermaid used.
+        - Diagnosis Stages: Grouped Bar Chart (Chart.js). Goal: Compare. Justification: Visually contrasts the current late-stage diagnosis paradigm with the proposed early-stage goal, highlighting the intended shift.
+        - Survival by Stage: Bar Chart (Chart.js). Goal: Compare. Justification: Directly links the proposed diagnostic shift to its ultimate benefit—a dramatic increase in survival probability, providing a powerful "why."
+        - All text and data are synthesized from the provided research report.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            max-width: 450px;
+            margin: auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .flow-step {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .flow-step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#0D47A1] mb-4">Cambiando el Paradigma del Cáncer de Páncreas</h1>
+            <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">Una estrategia de detección precoz para pacientes de alto riesgo, con el objetivo de transformar un diagnóstico tardío en una oportunidad de supervivencia.</p>
+        </header>
+
+        <section id="problem" class="mb-20">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="bg-white p-8 rounded-xl shadow-lg border-l-8 border-[#FF6F61]">
+                    <h2 class="text-3xl font-bold mb-4">El Desafío: Un Diagnóstico Tardío</h2>
+                    <p class="mb-4">El cáncer de páncreas (PDAC) tiene uno de los peores pronósticos. La razón principal es que más del 80% de los casos se diagnostican en fases avanzadas, cuando las opciones curativas son casi inexistentes.</p>
+                    <p>En pacientes con pancreatitis crónica, una condición de alto riesgo, es especialmente difícil diferenciar un tumor temprano de la inflamación usando imágenes convencionales.</p>
+                </div>
+                <div class="text-center">
+                    <h3 class="text-2xl font-semibold mb-4">Supervivencia a 5 Años (Todos los Estadios)</h3>
+                    <div class="chart-container">
+                        <canvas id="survivalChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="mb-20 text-center">
+            <h2 class="text-3xl font-bold mb-4">La Estrategia Dual Propuesta</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-12">Un enfoque de dos pasos para poblaciones de alto riesgo: primero, identificar quiénes tienen una predisposición genética. Segundo, monitorizarlos activamente para detectar el cáncer en su fase más temprana posible.</p>
+
+            <div class="flex flex-col md:flex-row justify-center items-center gap-8">
+                <div class="flow-step bg-white p-8 rounded-xl shadow-lg w-full md:w-1/3 border-t-8 border-[#4CAF50]">
+                    <div class="text-5xl font-bold text-[#4CAF50] mb-3">1</div>
+                    <h3 class="text-2xl font-semibold mb-2">Identificar Riesgo Hereditario</h3>
+                    <p class="text-gray-600">Se analiza el ADN del paciente en busca de mutaciones germinales en genes como <span class="font-semibold">*PRSS1*, *SPINK1*, *CTRC*,</span> y <span class="font-semibold">*CFTR*</span>, que están ligados a la Pancreatitis Hereditaria y a un riesgo magnificado de cáncer.</p>
+                </div>
+                
+                <div class="text-4xl font-bold text-gray-400 mx-4 my-4 md:my-0">&rarr;</div>
+
+                <div class="flow-step bg-white p-8 rounded-xl shadow-lg w-full md:w-1/3 border-t-8 border-[#0D47A1]">
+                    <div class="text-5xl font-bold text-[#0D47A1] mb-3">2</div>
+                    <h3 class="text-2xl font-semibold mb-2">Monitorización Molecular</h3>
+                    <p class="text-gray-600">En los pacientes identificados de alto riesgo, se realizan biopsias líquidas periódicas para detectar la mutación del gen <span class="font-semibold">*KRAS*</span>, un evento iniciador clave presente en más del 90% de los tumores pancreáticos, incluso en Estadio I.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="technology" class="mb-20 text-center">
+            <h2 class="text-3xl font-bold mb-4">La Tecnología Clave: Biopsia Líquida</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-12">La propuesta se apoya en una biopsia líquida (un simple análisis de sangre) para detectar ADN tumoral circulante. La tecnología CRISPR-Cas13 es especialmente prometedora por su potencial de alta sensibilidad, rapidez y bajo coste.</p>
+             <div class="bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto">
+                 <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b-2 border-gray-200">
+                                <th class="p-4 text-lg font-semibold">Tecnología</th>
+                                <th class="p-4 text-lg font-semibold">Ventaja Principal</th>
+                                <th class="p-4 text-lg font-semibold">Consideración</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-gray-100">
+                                <td class="p-4 font-semibold text-[#0D47A1]">CRISPR-Cas13</td>
+                                <td class="p-4">Potencialmente muy alta sensibilidad y bajo coste.</td>
+                                <td class="p-4">Tecnología emergente que requiere validación clínica.</td>
+                            </tr>
+                            <tr class="border-b border-gray-100">
+                                <td class="p-4 font-semibold">ddPCR</td>
+                                <td class="p-4">Muy sensible para mutaciones conocidas.</td>
+                                <td class="p-4">Limitada a pocos objetivos por análisis.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-semibold">NGS</td>
+                                <td class="p-4">Analiza cientos de genes a la vez.</td>
+                                <td class="p-4">Mayor coste y tiempo de análisis.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="impact" class="text-center">
+            <h2 class="text-3xl font-bold mb-12">Visualizando el Impacto: De la Sentencia a la Esperanza</h2>
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-semibold mb-4">Objetivo: Cambiar el Estadio del Diagnóstico</h3>
+                    <div class="chart-container">
+                        <canvas id="diagnosisStageChart"></canvas>
+                    </div>
+                     <p class="mt-4 text-gray-600 text-sm">El objetivo es mover la aguja de un 80% de diagnósticos tardíos a una mayoría de diagnósticos en fase temprana y tratable.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-semibold mb-4">El Resultado: Supervivencia por Estadio</h3>
+                    <div class="chart-container">
+                        <canvas id="survivalStageChart"></canvas>
+                    </div>
+                    <p class="mt-4 text-gray-600 text-sm">Detectar la enfermedad en estado localizado (Estadio I) puede aumentar la supervivencia a 5 años más de 10 veces.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="text-center p-8 mt-16 bg-gray-800 text-gray-400 text-sm">
+        <p>Infografía basada en la "Evaluación de una Propuesta para la Detección Precoz del Cáncer de Páncreas".</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chartOptionsBase = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                  return label.join(' ');
+                                } else {
+                                  return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            
+            const colors = {
+                primary: '#0D47A1', // Deep Blue
+                secondary: '#FF6F61', // Coral Red
+                accent: '#4CAF50', // Green
+                neutral: '#BDBDBD' // Light Gray
+            };
+
+            const survivalCtx = document.getElementById('survivalChart');
+            if(survivalCtx) {
+                new Chart(survivalCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Mortalidad', 'Supervivencia a 5 años'],
+                        datasets: [{
+                            label: 'Tasa de Supervivencia',
+                            data: [87, 13],
+                            backgroundColor: [colors.secondary, colors.accent],
+                            borderColor: '#f8f9fa',
+                            borderWidth: 4,
+                            hoverOffset: 8
+                        }]
+                    },
+                    options: {
+                        ...chartOptionsBase,
+                        cutout: '70%',
+                        plugins: {
+                           ...chartOptionsBase.plugins,
+                           legend: {
+                               display: false
+                           }
+                        }
+                    }
+                });
+            }
+
+            const diagnosisStageCtx = document.getElementById('diagnosisStageChart');
+            if(diagnosisStageCtx) {
+                new Chart(diagnosisStageCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: [['Estadios Tempranos', '(I & II)'], ['Estadios Tardíos', '(III & IV)']],
+                        datasets: [
+                            {
+                                label: 'Diagnóstico Actual',
+                                data: [20, 80],
+                                backgroundColor: colors.neutral,
+                            },
+                            {
+                                label: 'Objetivo Propuesto',
+                                data: [70, 30],
+                                backgroundColor: colors.primary,
+                            }
+                        ]
+                    },
+                    options: {
+                        ...chartOptionsBase,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    callback: function(value) { return value + '%' }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const survivalStageCtx = document.getElementById('survivalStageChart');
+            if(survivalStageCtx) {
+                new Chart(survivalStageCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: [['Enfermedad Localizada', '(Estadio I)'], ['Enfermedad a Distancia', '(Estadio IV)']],
+                        datasets: [{
+                            label: 'Supervivencia a 5 años (%)',
+                            data: [44, 3],
+                            backgroundColor: [colors.accent, colors.secondary],
+                        }]
+                    },
+                    options: {
+                        ...chartOptionsBase,
+                        indexAxis: 'y',
+                        plugins: {
+                            ...chartOptionsBase.plugins,
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 50,
+                                ticks: {
+                                    callback: function(value) { return value + '%' }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
